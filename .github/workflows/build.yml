@@ -1,32 +1,19 @@
-name: Build and Analyze PHP Project
-
+name: Build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
-    branches:
-      - master
-
+    types: [opened, synchronize, reopened]
 jobs:
   sonarqube:
     name: SonarQube
-    runs-on: ubuntu-latest  # Menggunakan ubuntu-latest untuk build PHP
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
         with:
-          php-version: '7.2'  # Ganti dengan versi PHP yang sesuai dengan proyek Anda
-
-      # - name: Install dependencies
-      #   run: |
-      #     composer install  # Menggunakan Composer untuk menginstal dependensi PHP
-
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
-        with:
-          token: ${{ secrets.SONAR_TOKEN }}  # Gunakan token SonarQube yang sudah diset di GitHub Secrets
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
