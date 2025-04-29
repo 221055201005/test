@@ -1,0 +1,1063 @@
+<?php $transmittal = $transmittal_list[0];
+$comment_list      = [];
+
+$checked_type               = "";
+
+$legend_inspection          = explode(";", $transmittal['legend_inspection_auth']);
+if ($legend_inspection[0] == 1) {
+  $checked_type             = "hold";
+} elseif ($legend_inspection[1] == 1) {
+  $checked_type             = "witness";
+} elseif ($legend_inspection[2] == 1 || $legend_inspection[3] == 1) {
+  $checked_type             = "review";
+}
+
+
+if (in_array($transmittal['project_code'], project_by_deck())) {
+  $rfi_no_format = $report_no_format[$transmittal['project_code']][$transmittal['company_id']][$transmittal['discipline']][$transmittal['module']][$transmittal['type_of_module']][$transmittal['deck_elevation']]['mv_no_rfi'] . '-' . $transmittal['report_number'];
+} else {
+  $rfi_no_format = $report_no_format[$transmittal['project_code']][$transmittal['company_id']][$transmittal['discipline']][$transmittal['module']][$transmittal['type_of_module']]['mv_no_rfi'] . '-' . $transmittal['report_number'];
+}
+
+
+if ($transmittal['company_id'] == 13) {
+  $rfi_no_format = $report_no_format[$transmittal['project_code']][$transmittal['company_id']][$transmittal['discipline']][$transmittal['module']][$transmittal['type_of_module']]['mv_no_rfi_smop'] . '-' . $transmittal['report_number'];
+}
+
+$is_ticked = 0;
+
+foreach ($transmittal_list as $value) {
+  if ($value['ticked_report_date'] == 1) {
+    $is_ticked = 1;
+  }
+}
+
+?>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><?php echo $rfi_no_format ?>.pdf</title>
+  <style type="text/css">
+    @page {
+      margin: 0cm 0cm;
+    }
+
+    /* body {
+      top: 0cm;
+      left: 0cm;
+      right: 0cm;
+      margin-top: 12.4cm;
+      margin-left: 1.6cm;
+      margin-right: 1.6cm;
+      margin-bottom: 8cm;
+      font-family: "helvetica";
+      font-size: 9px;
+    }
+
+
+    footer {
+      position: fixed;
+      top: 21.3cm;
+      left: 0cm;
+      right: 0cm;
+      height: 5cm;
+      padding-top: 3px;
+      padding-left: 1.5cm;
+      padding-right: 1.5cm;
+      font-size: 9px;
+    }
+
+    header {
+      position: fixed;
+      top: 1cm;
+      left: 0cm;
+      right: 0cm;
+      height: 5cm;
+      padding-top: 3px;
+      padding-left: 1.5cm;
+      padding-right: 1.5cm;
+      font-size: 9px;
+    } */
+
+    body {
+      top: 1cm;
+      left: 0cm;
+      right: 0cm;
+      margin-top: 5.34cm;
+      margin-left: 1.5cm;
+      margin-right: 1.5cm;
+      margin-bottom: 1cm;
+      font-family: "helvetica";
+      font-size: 9px;
+    }
+
+    .bg-selected {
+      background-color: #949494;
+    }
+
+
+    footer {
+      /* position: fixed; */
+      top: 21.3cm;
+      left: 0cm;
+      right: 0cm;
+      height: 5cm;
+      padding-top: 3px;
+      padding-left: 1.5cm;
+      padding-right: 1.5cm;
+      font-size: 9px;
+    }
+
+    header {
+      position: fixed;
+      top: 1cm;
+      left: 0cm;
+      right: 0cm;
+      height: 5cm;
+      padding-top: 3px;
+      padding-left: 1.5cm;
+      padding-right: 1.5cm;
+      font-size: 9px;
+    }
+
+
+    .titleHead {
+      border: 1px #000 solid;
+      border-collapse: collapse;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 25px;
+      background-color: #a6ffa6;
+      font-weight: bold;
+
+    }
+
+    .titleHeadMain {
+      text-align: center;
+      border-collapse: collapse;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    table.table td {
+      font-size: 90%;
+      border: 1px #000 solid;
+      font-weight: bold;
+      max-width: 150px;
+      word-wrap: break-word;
+    }
+
+    table>thead>tr>td,
+    table>tbody>tr>td {
+      vertical-align: top;
+    }
+
+    .br_break {
+      line-height: 15px;
+    }
+
+    .br_break_no_bold {
+      line-height: 18px;
+    }
+
+    .br {
+      border-right: 1px #000 solid !important;
+    }
+
+    .bl {
+      border-left: 1px #000 solid;
+    }
+
+    .bt {
+      border-top: 1px #000 solid;
+    }
+
+    .bb {
+      border-bottom: 1px #000 solid;
+    }
+
+    .bx {
+      border-left: 1px #000 solid;
+      border-right: 1px #000 solid;
+    }
+
+    .by {
+      border-top: 1px #000 solid;
+      border-bottom: 1px #000 solid;
+    }
+
+    .ball {
+      border-top: 1px #000 solid;
+      border-bottom: 1px #000 solid;
+      border-left: 1px #000 solid;
+      border-right: 1px #000 solid;
+    }
+
+    .tab {
+      display: inline-block;
+      width: 130px;
+    }
+
+    .tab2 {
+      display: inline-block;
+      width: 130px;
+    }
+
+    .text-nowrap {
+      white-space: nowrap;
+    }
+
+    .valign-middle {
+      vertical-align: middle;
+    }
+
+    label {
+      display: block;
+      padding-left: 2px;
+      padding-bottom: 5px;
+      padding-top: 1px;
+      text-indent: 1px;
+      font-size: 9px;
+    }
+
+    input {
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      margin: 0;
+      vertical-align: bottom;
+      position: relative;
+      top: -1px;
+      *overflow: hidden;
+    }
+
+    input[type=checkbox] {
+      /* Double-sized Checkboxes */
+      -ms-transform: scale(0.8);
+      /* IE */
+      -moz-transform: scale(0.8);
+      /* FF */
+      -webkit-transform: scale(0.8);
+      /* Safari and Chrome */
+      -o-transform: scale(0.8);
+      /* Opera */
+      transform: scale(0.8);
+      /*padding: 1px;*/
+    }
+
+    /* Might want to wrap a span around your checkbox text */
+    .checkboxtext {
+      /* Checkbox text */
+      font-size: 9px;
+      display: inline;
+    }
+
+    .check_stamp {
+      -ms-transform: scale(1.7) !important;
+      -moz-transform: scale(1.7) !important;
+      -webkit-transform: scale(1.7) !important;
+      -o-transform: scale(1.7) !important;
+      transform: scale(1.7) !important;
+    }
+
+
+    /* Might want to wrap a span around your checkbox text */
+    .checkboxtext {
+      /* Checkbox text */
+      font-size: 8px;
+      display: inline;
+    }
+
+    /* FOR STAMP */
+
+    .color_stamp {
+      color: rgba(63, 72, 204, 255);
+    }
+
+    .border_stamp {
+      border: 3px solid rgba(63, 72, 204, 255);
+    }
+
+    .box_stamp {
+      padding: 4px;
+      font-weight: bold;
+      /* margin-left: -10px !important; */
+      z-index: 99 !important;
+    }
+
+    .valign_middle {
+      vertical-align: middle !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+
+    <table border="1px" style="border-collapse: collapse !important;" width="100%">
+      <tr>
+        <td rowspan='3' valign="middle" style="padding: 5px;width: 260px !important;vertical-align: middle !important;">
+          <center>
+            <img src="img/seatrium_logo_bg_white.png" style="width: 150px;">
+          </center>
+          <!-- <img src="img/logo.png" style="width: 120px;"> -->
+        </td>
+        <?php if ($transmittal_list[0]['project_code'] == 19 || $transmittal_list[0]['project_code'] == 21) { ?>
+          <td style="padding: 5px;vertical-align: middle !important;">COMPANY :</td>
+        <?php  } ?>
+        <?php if ($transmittal_list[0]['project_code'] == 17) { ?>
+          <td style="padding: 5px;vertical-align: middle !important;">EMPLOYER :</td>
+        <?php  } ?>
+        <td style="padding: 5px;vertical-align: middle !important;">RFI NO :</td>
+      </tr>
+      <tr>
+        <td style="padding: 5px;vertical-align: middle !important;">
+          <b><?php echo strtoupper($client[$transmittal['project_code']]) ?></b>
+        </td>
+        <td style="padding: 5px;vertical-align: middle !important;"><b><?= $rfi_no_format ?>
+            <br> Rev. <?= $transmittal['report_no_rev'] ?>
+          </b></td>
+      </tr>
+      <tr>
+        <td style="padding: 5px;vertical-align: middle !important;" style="padding: 10px;">PROJECT TITLE</td>
+        <td style="padding: 5px;vertical-align: middle !important;">SUBMITED DATE</td>
+      </tr>
+      <tr>
+        <td rowspan='3' valign="middle" style="padding: 5px;vertical-align: middle !important;">
+          <center>
+            <img src="<?php echo $client_logo[$transmittal['project_code']]; ?>" style="width: 120px;">
+          </center>
+        </td>
+        <td style="padding: 5px;vertical-align: middle !important;">
+          <b><?php echo strtoupper($project_desc[$transmittal['project_code']]) ?></b>
+        </td>
+        <td style="padding: 5px;vertical-align: middle !important;">
+          <b><?php echo date("F d, Y", strtotime($transmittal['transmittal_datetime'])) ?></b>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 5px;vertical-align: middle !important;height: 15px !important;">CONTRACTOR</td>
+        <td style="padding: 5px;vertical-align: middle !important;">SHEET</td>
+      </tr>
+      <tr>
+        <td style="padding: 5px;vertical-align: middle !important;"><b>PT SMOE</b></td>
+        <td style="padding: 5px;vertical-align: middle !important;"><b></b></td>
+      </tr>
+    </table>
+  </header>
+  <table border="1px" style="border-collapse: collapse !important;" width="100%">
+    <?php
+
+    $inspection_date = date('d', strtotime($transmittal['time_inspect']));
+    $inspection_month = date('m', strtotime($transmittal['time_inspect']));
+
+    ?>
+
+    <tr>
+      <td colspan="22" style="text-align:center; padding-bottom: 4px; font-size: 12px !important;"><b>RFI - INSPECTION
+          NOTIFICATION</b></td>
+    </tr>
+    <tr>
+      <td colspan="6" style="text-align:center; padding-bottom: 4px;"><b>MONTH</b></td>
+      <td colspan="16" style="text-align:center; padding-bottom: 4px;"><b>DAY</b></td>
+    </tr>
+    <tr>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 1 ? 'bg-selected' : '' ?>">
+        <b>JAN</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 2 ? 'bg-selected' : '' ?>">
+        <b>FEB</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 3 ? 'bg-selected' : '' ?>">
+        <b>MAR</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 4 ? 'bg-selected' : '' ?>">
+        <b>APR</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 5 ? 'bg-selected' : '' ?>">
+        <b>MAY</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 6 ? 'bg-selected' : '' ?>">
+        <b>JUN</b>
+      </td>
+      <td rowspan='2' style="text-align:center; padding-bottom: 4px;vertical-align: middle !important;" class="<?= $inspection_date == 1 ? 'bg-selected' : '' ?>"><b>1</b></td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 2 ? 'bg-selected' : '' ?>">
+        <b>2</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 3 ? 'bg-selected' : '' ?>">
+        <b>3</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 4 ? 'bg-selected' : '' ?>">
+        <b>4</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 5 ? 'bg-selected' : '' ?>">
+        <b>5</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 6 ? 'bg-selected' : '' ?>">
+        <b>6</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 7 ? 'bg-selected' : '' ?>">
+        <b>7</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 8 ? 'bg-selected' : '' ?>">
+        <b>8</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 9 ? 'bg-selected' : '' ?>">
+        <b>9</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 10 ? 'bg-selected' : '' ?>">
+        <b>10</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 11 ? 'bg-selected' : '' ?>">
+        <b>11</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 12 ? 'bg-selected' : '' ?>">
+        <b>12</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 13 ? 'bg-selected' : '' ?>">
+        <b>13</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 14 ? 'bg-selected' : '' ?>">
+        <b>14</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 15 ? 'bg-selected' : '' ?>">
+        <b>15</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 16 ? 'bg-selected' : '' ?>">
+        <b>16</b>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 7 ? 'bg-selected' : '' ?>">
+        <b>JUL</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 8 ? 'bg-selected' : '' ?>">
+        <b>AUG</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 9 ? 'bg-selected' : '' ?>">
+        <b>SEP</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 10 ? 'bg-selected' : '' ?>">
+        <b>OCT</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 11 ? 'bg-selected' : '' ?>">
+        <b>NOV</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_month == 12 ? 'bg-selected' : '' ?>">
+        <b>DEC</b>
+      </td>
+
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 17 ? 'bg-selected' : '' ?>">
+        <b>17</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 18 ? 'bg-selected' : '' ?>">
+        <b>18</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 19 ? 'bg-selected' : '' ?>">
+        <b>19</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 20 ? 'bg-selected' : '' ?>">
+        <b>20</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 21 ? 'bg-selected' : '' ?>">
+        <b>21</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 22 ? 'bg-selected' : '' ?>">
+        <b>22</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 23 ? 'bg-selected' : '' ?>">
+        <b>23</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 24 ? 'bg-selected' : '' ?>">
+        <b>24</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 25 ? 'bg-selected' : '' ?>">
+        <b>25</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 26 ? 'bg-selected' : '' ?>">
+        <b>26</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 27 ? 'bg-selected' : '' ?>">
+        <b>27</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 28 ? 'bg-selected' : '' ?>">
+        <b>28</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 29 ? 'bg-selected' : '' ?>">
+        <b>29</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 30 ? 'bg-selected' : '' ?>">
+        <b>30</b>
+      </td>
+      <td style="text-align:center; padding-bottom: 4px;" class="<?= $inspection_date == 31 ? 'bg-selected' : '' ?>">
+        <b>31</b>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="22" style="text-align:left; padding-bottom: 4px; padding-left: 4px; font-size: 12px !important;">
+        <b>Document Ref
+          :
+          <?php echo $master_acceptance[$transmittal['project_code']][$transmittal['company_id']][$transmittal['discipline']][$transmittal['module']][$transmittal['type_of_module']]['mv']['acceptance_criteria'];
+          ?>
+        </b>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="22" style="text-align:left; padding-bottom: 4px; ">Discipline : &nbsp;&nbsp;
+        <?php if ($transmittal['discipline'] == '2') { ?><input type="checkbox" name="optiona" id="opta" checked /><?php } else { ?><input type="checkbox" name="optiona" id="opta" /><?php } ?><span class="checkboxtext"> &nbsp;&nbsp;STRUCTURAL&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
+        <input type="checkbox" name="optiona" id="opta" /><span class="checkboxtext"> &nbsp;&nbsp;E &
+          I&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <input type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">
+          &nbsp;&nbsp;MECHANICAL&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <?php if ($transmittal['discipline'] == '1') { ?><input type="checkbox" name="optiona" id="opta" checked="" /><?php } else { ?><input type="checkbox" name="optiona" id="opta" /><?php } ?><span class="checkboxtext"> &nbsp;&nbsp;PIPING&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="checkboxtext"><input type="checkbox" name="optiona" id="opta" />&nbsp;&nbsp;HVAC&nbsp;&nbsp;&nbsp;&nbsp;</span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="22" style="text-align:left; padding-bottom: 4px; font-size: 12px !important;">TYPE OF INSPECTION :
+      </td>
+    </tr>
+    <tr>
+      <td colspan="22" style="text-align:left; padding-bottom: 4px; ">
+        <table width="100%">
+          <tr>
+            <td style="text-align:left; padding-bottom: 4px;">
+              <input type="checkbox" name="optiona" id="opta" checked />
+              <span class="checkboxtext">&nbsp;&nbsp;Material / Equipment Inspection&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px;">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext">&nbsp;&nbsp;Dimensional&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px; ">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Witness Pressure Test&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px; ">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Mechanical Completion&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align:left; padding-bottom: 4px;">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Welder Qualification&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px;">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Fit-up Inspection&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px; ">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Final Inspection&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px; ">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Pre-Commisioning / Commisioning&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align:left; padding-bottom: 4px;">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Procedure Qualification&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px;">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Visual Inspection&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px; ">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Blasting / Painting / Coating&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px; ">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Document Review&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align:left; padding-bottom: 4px;">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Production Test Coupon Welding&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px;">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Witness NDT&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px; ">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;E & I Inspection&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td style="text-align:left; padding-bottom: 4px; ">
+              <input type="checkbox" name="optiona" id="opta" />
+              <span class="checkboxtext"> &nbsp;&nbsp;Other&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" style="font-weight: bold; padding-bottom: 4px; font-size: 10px !important;">
+        <center>No.</center>
+      </td>
+      <td colspan="6" style="font-weight: bold; padding-bottom: 4px; font-size: 10px !important;">
+        <center>ITEM / TAG NUMBER</center>
+      </td>
+      <td colspan="7" style="font-weight: bold; padding-bottom: 4px; font-size: 10px !important;">
+        <center>ITEM / DESCRIPTION</center>
+      </td>
+      <td colspan="3" style="font-weight: bold; padding-bottom: 4px; font-size: 10px !important;">
+        <center>AREA / LOCATION</center>
+      </td>
+      <td colspan="5" style="font-weight: bold; padding-bottom: 4px; font-size: 10px !important;">
+        <center>EXPECTED TIME</center>
+      </td>
+    </tr>
+
+    <?php
+
+    $add_empty_row = false;
+    $total_new_row = 0;
+
+    if (count($transmittal_list) < 10) {
+      $add_empty_row = true;
+      $total_new_row = 10 - count($transmittal_list);
+    }
+
+    $no = 1;
+    $count_client_approve   = 0;
+    $count_client_reject    = 0;
+    $count_client_pending   = 0;
+    $count_all_Data = 0;
+    foreach ($transmittal_list as $key => $value) : ?>
+
+      <?php
+      if ($value['status_inspection'] == 5) {
+        $count_client_pending++;
+      }
+      if ($value['status_inspection'] == 7) {
+        $count_client_approve++;
+      }
+      if ($value['status_inspection'] == 6) {
+        $count_client_reject++;
+      }
+      $count_all_Data++;
+
+      ?>
+      <?php
+
+      if ($value['rejected_client_remarks'] != '') {
+        $comment_list[] = $value['rejected_client_remarks'];
+      }
+
+      ?>
+      <tr>
+        <td colspan="1" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none;">
+          <?= $no++ ?></td>
+        <td colspan="6" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none;">
+          Piecemark No. : <?php echo $value['part_id']; ?></td>
+        <td colspan="7" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none;">
+
+          <?= $value['drawing_sp']; ?></td>
+        <!-- <td colspan="7" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none;">
+
+          <?php
+
+          $uniq_no_list = [];
+
+          if ($value['piping_testing_category'] == 1) {
+            foreach (explode(";", $value['id_mis_piping']) as $v) {
+              $uniq_no_list[] = $detail_mis[$v]['unique_no'];
+            }
+          } else {
+            $uniq_no_list[] = $detail_mis[$value['id_mis']]['unique_no'];
+          }
+
+
+          ?>
+          Uniq No : <?= implode(",", $uniq_no_list) ?></td> -->
+        <td colspan="3" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none;">
+
+          <?php if ($value['area_v2']) : ?>
+            <?php
+
+            $area_location = '';
+
+            $area_location .= $area_v2[$value['area_v2']]['name'];
+
+            if ($value['location_v2']) {
+              $area_location .= ', ' . $location_v2[$value['location_v2']]['name'];
+
+              if ($value['point_v2']) {
+                $area_location .= ', ' . $point_v2[$value['point_v2']]['name'];
+              }
+            }
+
+            ?>
+            <?= $area_location ?>
+
+          <?php else : ?>
+            <?php echo $area_name[$value['location_inspect']]; ?>
+          <?php endif; ?>
+
+
+
+        </td>
+        <td colspan="5" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none;">
+          <?= $value['time_inspect'] ?></td>
+      </tr>
+    <?php endforeach; ?>
+
+    <?php if ($add_empty_row) : ?>
+
+      <?php foreach (range(1, $total_new_row) as $value) : ?>
+        <tr>
+          <td colspan="1" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none; ">
+            <span style="color:white">new</span>
+          </td>
+          <td colspan="6" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none; ">
+            <span style="color:white">new</span>
+          </td>
+          <td colspan="7" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none; ">
+            <span style="color:white">new</span>
+          </td>
+          <td colspan="3" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none; ">
+            <span style="color:white">new</span>
+          </td>
+          <td colspan="5" style="text-align: center; padding-bottom: 4px; font-size: 10px !important; border-top: none; border-bottom: none; ">
+            <span style="color:white">new</span>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+
+    <?php endif; ?>
+
+
+  </table>
+
+  <!--  <table  border="1px" style="border-collapse: collapse !important;" width="100%">
+      <tr>
+        <td style="padding-bottom: 4px; font-size: 12px !important;"><b>STRUCTURAL MATERIAL TRACEABILITY REPORT</b></td>
+      </tr>
+      <tr>
+       <td><b>QUALITY CONTROL DEPARTMENT</b></td>
+      </tr>
+    </table> -->
+
+  <!-- </header> -->
+
+  <!-- <footer> -->
+  <?php $sisa_pending_client = $count_all_Data - $count_client_approve;  ?>
+  <?php
+  // $sisa_reject_client = $count_all_Data - $count_client_reject;
+  $sisa_reject_client       = $count_client_pending <= 0 && $count_client_reject > 0 ? 0 : 999;
+
+  ?>
+
+  <div style="page-break-inside: avoid;">
+    <table border="1px" style="border-collapse: collapse !important;" width="100%">
+      <tr>
+        <td colspan="<?= $transmittal_list[0]['company_id'] == 5 ? 4 : 3 ?>" style="text-align:center; padding-bottom: 4px; font-size: 12px !important;"><b>LEGEND :
+            INSPECTION AUTHORITY AS PER ITP</b></td>
+      </tr>
+
+      <tr>
+        <?php
+
+        $inspection_auth = $transmittal['legend_inspection_auth'];
+        $inspection_auth = explode(";", $inspection_auth);
+        ?>
+        <td colspan="<?= $transmittal_list[0]['company_id'] == 5 ? 4 : 3 ?>" style="text-align:left; padding-bottom: 4px; font-size: 13px !important;font-weight: bold;">
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $inspection_auth[0] == 1 ? 'checked' : '' ?> /><span class="checkboxtext"> &nbsp;Hold
+            Point&nbsp; </span>
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $inspection_auth[1] == 1 ? 'checked' : '' ?> /><span class="checkboxtext"> &nbsp;Witness&nbsp;
+          </span>
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $inspection_auth[2] == 1 ? 'checked' : '' ?> /><span class="checkboxtext">
+            &nbsp;Monitoring&nbsp; </span>
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $inspection_auth[3] == 1 ? 'checked' : '' ?> /><span class="checkboxtext"> &nbsp;Review&nbsp;
+          </span>
+          &nbsp;
+
+
+        </td>
+      </tr>
+
+
+      <tr>
+        <td colspan="<?= $transmittal_list[0]['company_id'] == 5 ? 4 : 3 ?>" style="text-align:center; padding-bottom: 4px; font-size: 12px !important;"><b>INSPECTION
+            EXECUTION
+            RESULT</b></td>
+      </tr>
+      <tr>
+        <td colspan="<?= $transmittal_list[0]['company_id'] == 5 ? 4 : 3 ?>" style="text-align:left; padding-bottom: 4px; font-size: 13px !important;font-weight: bold;text-align: center;">
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $sisa_pending_client <= 0 && $transmittal_list[0]['status_inspection'] >= 5 ? 'checked' : '' ?> /><span class="checkboxtext">
+            &nbsp;Accepted:&nbsp;
+          </span>
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $transmittal['status_inspection'] == 9 ? 'checked' : '' ?> /><span class="checkboxtext"> &nbsp;Accepted
+            &
+            Release With
+            Comments : &nbsp; </span>
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $sisa_reject_client <= 0 && $transmittal_list[0]['status_inspection'] >= 5 ? 'checked' : '' ?> /><span class="checkboxtext"> &nbsp;Rejected
+            :&nbsp; </span>
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $transmittal['status_inspection'] == 10 ? 'checked' : '' ?> /><span class="checkboxtext">
+            &nbsp;Postponed
+            :&nbsp; </span>
+          <input type="checkbox" name="optiona" id="opta" style="font-size: 15pt !important; padding-bottom: 4px;" <?= $transmittal['status_inspection'] == 11 ? 'checked' : '' ?> /><span class="checkboxtext"> &nbsp;Re-Offer
+            :&nbsp; </span>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="<?= $transmittal_list[0]['company_id'] == 5 ? 4 : 3 ?>" style="text-align:center; padding-bottom: 4px; font-size: 12px !important;">
+          <b>INSPECTION
+            EXECUTION
+            RESULT</b>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="<?= $transmittal_list[0]['company_id'] == 5 ? 4 : 3 ?>" style="text-align:left; padding-bottom: 4px; font-size: 12px !important;"><b>Comment/Remarks
+            :<br />
+
+            <!-- <?php if (count($comment_list) > 0) : ?>
+              <ul>
+                <?php foreach ($comment_list as $key => $value) : ?>
+                  <li><?= $value ?></li>
+                <?php endforeach; ?>
+              </ul>
+            <?php else : ?>
+              <br /><br />
+            <?php endif; ?> -->
+          </b></td>
+      </tr>
+      <!-- <tr>
+        <td style="text-align:left; padding-bottom: 4px; font-size: 10px !important;">
+          <table width="100%"  style="border-collapse: collapse;text-align: center;">
+            <tr>
+              <td rowspan="2">INSPECTION AUTHORITY</td>
+              <td colspan="4">SUPLIER</td>
+              <td colspan="4">CONTRACTOR</td>
+              <td colspan="4">EMPLOYER</td>
+              <td colspan="4">THIRD PARTY</td>
+            </tr>
+            <tr>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">H</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">W</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">M</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">R</span></td>
+
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">H</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">W</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">M</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">R</span></td>
+
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">H</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">W</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">M</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">R</span></td>
+
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">H</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">W</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">M</span></td>
+              <td><input  type="checkbox" name="optiona" id="opta" /><span class="checkboxtext">R</span></td>
+            </tr>
+          </table>
+        </td>
+      </tr> -->
+      <tr>
+        <td colspan="<?= $transmittal_list[0]['company_id'] == 5 ? 4 : 3 ?>" style="text-align:center; padding-bottom: 4px; font-size: 10px !important;"><b>SIGNATURE FOR
+            INSPECTION
+            EXECUTED</b></td>
+      </tr>
+
+      <tr>
+        <!-- <td style="text-align:center; padding-bottom: 4px; font-size: 12px !important;text-align: center;font-weight: bold;">SUPLIER</td> -->
+        <?php if ($transmittal_list[0]['company_id'] == 5) { ?>
+          <td style="text-align:center; padding-bottom: 4px; font-size: 12px !important;text-align: center;font-weight: bold; width:33.33%;">
+            DSAW</td>
+        <?php  } ?>
+        <td style="text-align:center; padding-bottom: 4px; font-size: 12px !important;text-align: center;font-weight: bold; width:33.33%;">
+          CONTRACTOR</td>
+        <?php if ($transmittal_list[0]['project_code'] == 19 || $transmittal_list[0]['project_code'] == 21) { ?>
+          <td style="text-align:center; padding-bottom: 4px; font-size: 12px !important;text-align: center;font-weight: bold; width:33.33%;">
+            COMPANY</td>
+        <?php  } ?>
+        <?php if ($transmittal_list[0]['project_code'] == 17) { ?>
+          <td style="text-align:center; padding-bottom: 4px; font-size: 12px !important;text-align: center;font-weight: bold; width:33.33%;">
+            EMPLOYER</td>
+        <?php  } ?>
+        <td style="text-align:center; padding-bottom: 4px; font-size: 12px !important;text-align: center;font-weight: bold; width:33.33%;">
+          THIRD PARTY</td>
+      </tr>
+
+      <tr>
+        <!-- <td style="padding-bottom: 4px; font-size: 10px !important;">NAME</td> -->
+        <!-- DSAW -->
+        <?php if ($transmittal_list[0]['company_id'] == 5) { ?>
+          <td style="padding-bottom: 4px; font-size: 10px !important;">NAME <b><?= $user[$transmittal_list[0]['requestor']]['full_name'] ?></b></td>
+        <?php  }   ?>
+        <!-- END DSAW -->
+        <td style="padding-bottom: 4px; font-size: 10px !important;">NAME
+          <b><?= $user[$transmittal_list[0]['inspection_by']]['full_name'] ?></b>
+        </td>
+        <td style="padding-bottom: 4px; font-size: 10px !important;">NAME
+          <b><?= $sign_client ? $user[$transmittal_list[0]['inspection_client_by']]['full_name'] : '' ?></b>
+        </td>
+        <td style="padding-bottom: 4px; font-size: 10px !important;">NAME</td>
+      </tr>
+      <tr>
+        <!-- <td style="padding-bottom: 4px; font-size: 10px !important;">SIGNATURE<br/><br/><br/></td> -->
+        <!-- DSAW -->
+        <?php if ($transmittal_list[0]['company_id'] == 5) { ?>
+          <td style="padding-bottom: 4px; font-size: 10px !important;">SIGNATURE<br />
+            <img src="data:image/png;base64,<?= $user[$transmittal_list[0]['requestor']]['sign_approval'] ?>" style="width: 150px !important; height: 100px !important">
+          </td>
+        <?php  }   ?>
+        <!-- END -->
+        <td style="padding-bottom: 4px; font-size: 10px !important;">SIGNATURE<br />
+          <?php
+          if ($sisa_pending_client <= 0 && $transmittal_list[0]['status_inspection'] >= 5) {
+            echo "<br>";
+          }
+          ?>
+          <img src="data:image/png;base64,<?= $user[$transmittal_list[0]['inspection_by']]['sign_approval'] ?>" style="width: 150px !important; height: 100px !important">
+        </td>
+
+        <td style="padding-bottom: 4px; font-size: 10px !important;">SIGNATURE<br />
+          <?php
+          if ($sisa_pending_client <= 0 && $transmittal_list[0]['status_inspection'] >= 5) {
+            if ($transmittal_list[0]['add_comment'] == 1) {
+              echo "<b>Approved By :</b>";
+            } elseif ($transmittal_list[0]['add_comment'] == 2) {
+              echo "<b>Witnessed By :</b>";
+            } elseif ($transmittal_list[0]['add_comment'] == 3) {
+              echo "<b>Reviewed By :</b>";
+            }
+          } elseif ($sisa_reject_client <= 0 && $transmittal_list[0]['status_inspection'] >= 5) {
+            echo "<b>Rejected By :</b>";
+          }
+          ?>
+          <div style="page-break-inside: avoid;">
+            <?php if ($transmittal['project_code'] == 17) : ?>
+              <div class="box color_stamp border_stamp box_stamp">
+                <center>
+                  <img src="img/orsted_stamp.png" style="width:35px">
+                  <br>
+                  <strong>CHW 2204 OSS Project</strong>
+                </center>
+                <table cellpadding="0" style="width:100%;">
+                  <tr>
+                    <td width="40%" class="valign_middle">Review</td>
+                    <td><input type="checkbox" class="check_stamp" style="margin-bottom: 8px" <?= $checked_type == "review" ? 'checked' : '' ?>></td>
+                  </tr>
+                </table>
+                <table cellpadding="0" style="width:100%;">
+                  <tr>
+                    <td width="40%" class="valign_middle">Witness</td>
+                    <td><input type="checkbox" class="check_stamp" style="margin-bottom: 8px" <?= in_array($checked_type, ["witness", "hold"]) ? 'checked' : '' ?>></td>
+                  </tr>
+                </table>
+                <table cellpadding="0" style="width:100%;">
+                  <tr>
+                    <td width="40%" class="valign_middle">Inspect</td>
+                    <td><input type="checkbox" class="check_stamp" style="margin-bottom: 8px" <?= $checked_type == "hold" ? 'checked' : '' ?>></td>
+                  </tr>
+                </table>
+                <br>
+                Date : <?= $sign_client ? date("Y-m-d", strtotime($transmittal_list[0]['inspection_client_datetime'])) : space(15) ?>
+                &nbsp;
+                <span style="z-index: 99 !important;">Signature :</span>
+
+              </div>
+
+              <div class="text-right" style="padding-right: 5px; padding-bottom:3px;">
+                <?php if ($sign_client) : ?>
+
+                  <img src="data:image/png;base64, <?= $user[$transmittal_list[0]['inspection_client_by']]['sign_approval'] ?>" style='width: 4.5cm; height: 2.8cm; position: absolute; margin-left: 80px !important; margin-top: -115px !important; z-index: -99 !important; ' />
+
+                <?php endif; ?>
+              </div>
+            <?php else : ?>
+              <?php if ($sign_client) : ?>
+                <img src="data:image/png;base64,<?= $user[$transmittal_list[0]['inspection_client_by']]['sign_approval'] ?>" style="width: 150px !important; height: 100px !important">
+              <?php endif; ?>
+            <?php endif; ?>
+          </div>
+        </td>
+
+        <td style="padding-bottom: 4px; font-size: 10px !important;">SIGNATURE<br /><br /><br />
+        </td>
+      </tr>
+      <tr>
+        <!-- <td style="padding-bottom: 4px; font-size: 10px !important;">Date</td> -->
+        <!-- DSAW -->
+        <?php if ($transmittal_list[0]['company_id'] == 5) { ?>
+          <td style="padding-bottom: 4px; font-size: 10px !important;">Date <b><?= date("Y-m-d", strtotime($transmittal_list[0]['date_request'])) ?> </b></td>
+        <?php  }   ?>
+        <!-- END DSAW -->
+        <td style="padding-bottom: 4px; font-size: 10px !important;">Date
+          <b>
+            <?php if ($is_ticked) : ?>
+              <?= date("Y-m-d", strtotime($transmittal_list[0]['document_approval_date'])) ?>
+
+            <?php else : ?>
+              <?= date("Y-m-d", strtotime($transmittal_list[0]['inspection_datetime'])) ?>
+            <?php endif; ?>
+
+          </b>
+        </td>
+        <td style="padding-bottom: 4px; font-size: 10px !important;">Date
+          <b><?php echo $sign_client ? date("Y-m-d", strtotime($transmittal_list[0]['inspection_client_datetime'])) : '' ?></b>
+        </td>
+        <td style="padding-bottom: 4px; font-size: 10px !important;">Date</td>
+      </tr>
+
+
+    </table>
+    <!-- <table width="100%" border="1px" style="border-collapse: collapse;">
+      
+    </table> -->
+  </div>
+  <!-- </footer> -->
+
+</body>
+
+</html>

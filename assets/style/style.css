@@ -1,0 +1,177 @@
+body {
+  font-family: Arial !important;
+  background-color: #f2f2f2;
+}
+
+.text-seatrium-blue {
+  color: #003eff !important;
+}
+
+.bg-seatrium-blue {
+  background-color: #003eff !important;
+}
+
+.bg-seatrium-blue-dark {
+  background-color: #012bb3 !important;
+  color: white;
+}
+
+.text-seatrium-blue-dark {
+  color : #012bb3 !important;
+}
+
+.bg-seatrium-purple {
+  background-color: #8e48ff !important;
+  color: white;
+}
+
+#topbar-mobile {
+  display: none;
+}
+
+.button-menu-mobile {
+  display: none;
+}
+
+.tab-menu-desktop {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  #topbar-mobile {
+    display: block;
+  }
+
+  /* .image-company {
+    width: 60%;
+  } */
+
+  .topbar-menu {
+    border-bottom: 1px solid #bdc3c7;
+  }
+
+  .logo-top {
+    width: 200px;
+  }
+
+  .tab-menu-desktop,
+  .tab-user {
+    display: none;
+  }
+
+  .button-menu-mobile {
+    display: inline;
+  }
+
+  .sidebar-foot {
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+  }
+}
+
+body,
+.form-control,
+.custom-select,
+.btn {
+  font-size: 0.9rem;
+
+}
+
+.notificationx .badgex {
+  position: absolute;
+  top: -10px;
+  left: -11px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  font-size: 9px !important;
+}
+
+.notif {
+  max-width: 330px !important;
+  z-index: 999;
+}
+
+#notif_container {
+  z-index: 1021;
+  transform: translate3d(-45px, 36px, 0px) !important;
+}
+
+.logo-top {
+  max-width: 100%;
+  height: auto;
+}
+
+.sidebar-group {
+  margin-bottom: 20px;
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0
+  }
+
+  to {
+    opacity: 1
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0
+  }
+
+  to {
+    opacity: 1
+  }
+}
+
+.fadeIn {
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn
+}
+
+.dropdown-item {
+  font-size: 12px;
+  text-align: left;
+}
+
+.user-box {
+  display: flex;
+  padding: .25rem 1rem
+}
+
+.user-box .u-text {
+  font-size: 11px !important;
+}
+
+.user-box .u-text h4 {
+  margin-bottom: 5px;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1
+}
+
+.user-box .u-text .text-muted {
+  font-size: 12px;
+  margin-bottom: 5px
+}
+
+.user-box .u-text .btn {
+  font-size: 11px
+}
+
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both
+}
+
+.margin-bottom-sb-10 {
+  margin-bottom : 10px !important;
+}

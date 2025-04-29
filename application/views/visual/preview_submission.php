@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html><head>
+  <?php $pending = "<label><input type='checkbox' style='margin-top: 0 cm; margin-bottom: 0 cm;'> PASS</label> <BR/> <label><input type='checkbox' style='margin-top: 0 cm; margin-bottom: 0 cm;'> REJECT</label>"; ?>
+  <?php 
+    $reno = 'PREVIEW';
+  ?>
+  <title>PREVIEW</title>
+  <style type="text/css">
+   <?php error_reporting(0) ?>
+   @page {
+      margin: 0cm 0cm;
+    }
+
+    body {
+      top: 0cm;
+      left: 0cm;
+      right: 0cm;
+      margin-top: 6.1cm;
+      margin-left: 0.25cm;
+      margin-right: 0.25cm;
+      margin-bottom: 1cm;
+      font-family: "helvetica";
+      font-size: 50% !important;
+    }
+
+    header {
+      position: fixed;
+      left: 0cm;
+      right: 0cm;
+      height: 5cm;
+      padding-top: 15px;
+      margin-top: 0.5cm;
+      margin-left: 0.25cm;
+      margin-right: 0.25cm;
+    
+    }
+
+    footer {
+      position: fixed;
+      top:18cm;
+      left: 0cm;
+      right: 0cm;
+      height: 5cm;
+      padding-top: 15px;
+      margin-left: 0.5cm;
+      margin-right: 0.5cm;
+    
+    }
+
+    .titleHead {
+      border:1px #000 solid;
+      border-collapse: collapse;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 25px;
+      background-color: #a6ffa6;
+      font-weight: bold;
+     
+    }
+
+    .titleHeadMain {
+      text-align: center;
+      border-collapse: collapse;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    table.table td {
+      font-size: 90%;
+      border:1px #000 solid;
+      font-weight: bold;
+      max-width: 150px;
+      word-wrap: break-word;
+    }
+
+    table>thead>tr>td,table>tbody>tr>td{
+      vertical-align: top;
+    }
+
+    .br_break{
+      line-height: 15px;
+    }
+
+    .br_break_no_bold{
+      line-height: 18px;
+    }
+
+    .br{
+      border-right: 1px #000 solid;
+    }
+    .bl{
+      border-left: 1px #000 solid;
+    }
+    .bt{
+      border-top: 1px #000 solid;
+    }
+    .bb{
+      border-bottom:  1px #000 solid;
+    }
+    .bx{
+      border-left: 1px #000 solid;
+      border-right: 1px #000 solid;
+    }
+    .by{
+      border-top: 1px #000 solid;
+      border-bottom: 1px #000 solid;
+    }
+    .ball{
+      border-top: 1px #000 solid;
+      border-bottom: 1px #000 solid;
+      border-left: 1px #000 solid;
+      border-right: 1px #000 solid;      
+      word-wrap: break-word;
+    }   
+    .tab{
+      display: inline-block; 
+      width: 60px;
+    }
+    .tab2{
+      display: inline-block; 
+      width: 120px;
+    }
+
+    hr {
+      border-top: 0px !important;
+    }
+
+    label {
+      display: block;
+      padding-left: 2;
+      text-indent: -1;
+    }
+
+    input {
+      width: 5px;
+      height: 5px;
+      padding: 0;
+      margin:0;
+      vertical-align: bottom;
+      position: relative;
+      top: 0px;
+      *overflow: hidden;
+    }
+
+  </style>
+</head><body>
+  <header>  
+    <table width="100%" border="1px" style="border-collapse: collapse !important;">
+      <tr>
+
+        <td width="100%;" style="padding: 10px;"><center><img src="img/header_report.png" style=' height: 50px;' /></center></td>
+      </tr>     
+    </table> 
+  </br>
+    <table width="100%" border="1px" style="border-collapse: collapse !important;">
+      <head>
+        <tr>
+          <td ><b class="tab">EMPLOYER</b>: <?= $master_project[$visual_preview[0]['project']]['client'] ?></td>
+          <td><b class="tab2">REPORT NO.</b>: <?= $access=='client' ? strtoupper($reno) : $visual_preview[0]['submission_id'] ?></td>
+        </tr>
+        <tr>
+          <td ><b class="tab">PROJECT</b>: <?= strtoupper($master_project[$visual_preview[0]['project']]['description']) ?></td>
+          <td><b class="tab2">DATE</b>: <?php if($visual_preview[0]['status_inspection'] <= 7){ echo date("d F Y",strtotime($visual_preview[0]['date_request'])); } else { echo date("d F Y",strtotime($visual_preview[0]['inspection_datetime'])); }; ?></td>
+
+        </tr>
+        <tr>
+          <td ><b class="tab">MODULE</b>: <?= $master_module[$visual_preview[0]['module']]['mod_desc'] ?></td>
+          <td><b class="tab2">DRAWING NO.</b>: <?= $visual_preview[0]['drawing_no'].' Rev. '.($visual_preview[0]['status_inspection']==7 || $visual_preview[0]['status_inspection']==9 ? $visual_preview[0]['drawing_rev_no'] : $master_drawing[$visual_preview[0]['drawing_no']]['last_revision_no']) ?></td>
+        </tr>
+        <tr>
+          <td ><b class="tab">CONTRACTOR</b>: PT.SMOE</td>
+          <td><b class="tab2">DESCRIPTION</b>: <?= $master_drawing[$visual_preview[0]['drawing_no']]['title'] ?></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="bb bx" width="100%"><center><b>VISUAL INSPECTION REPORT - <?= strtoupper($master_discipline[$visual_preview[0]['discipline']]['discipline_name']) ?></b></center></td>
+        </tr>
+        <tr>
+          <td colspan="1" class="bb bx" width="100%"><left><b>DOCUMENT / SPECIFICATION / PROCEDURE No. / REFER to :
+          <?php 
+            if($visual_preview[0]['status_inspection']>=5){
+              if(in_array(1, explode(';', $visual_preview[0]['legend_inspection_auth'])) || in_array(2, explode(';', $visual_preview[0]['legend_inspection_auth']))){
+                echo "</br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• 002752254 -Part B Section 4 - Offshore Converter Platform</br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• 003720372 Structural ITP : (14)  Visual Inspection Special Structure
+                ";
+              } else {
+                echo "</br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• 002752254 -Part B Section 4 - Offshore Converter Platform</br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• 003720372 Structural ITP : (15) Visual Inspection Primary & Secondary Structure
+                ";
+              }
+            } else{
+              if($visual_preview[0]['class']==1){
+                echo "</br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• 002752254 -Part B Section 4 - Offshore Converter Platform</br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• 003720372 Structural ITP : (14)  Visual Inspection Special Structure
+                ";
+              } else {
+                echo "</br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• 002752254 -Part B Section 4 - Offshore Converter Platform</br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• 003720372 Structural ITP : (15) Visual Inspection Primary & Secondary Structure
+                ";
+              }
+            }
+          ?>
+          </b></left></td>
+          <td colspan="1" class="bb bx" width="100%"><left><b>Acceptance Criteria :
+          <?php 
+            if($visual_preview[0]['status_inspection']>=5){
+              if(in_array(1, explode(';', $visual_preview[0]['legend_inspection_auth'])) || in_array(2, explode(';', $visual_preview[0]['legend_inspection_auth']))){
+                // echo "</br>&nbsp;&nbsp;&nbsp;&nbsp;• EN ISO 5817 – Level B category)";
+                echo "
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• DNVGL-OS-C401
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• DNVGL-CG-0051 Sec. 1.5
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• EN ISO 5817 – Level B category)
+                ";
+              } else {
+                // echo "</br> &nbsp;&nbsp;&nbsp;&nbsp;• EN ISO 5817 – Level C category)";
+                echo "
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• DNVGL-OS-C401
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• DNVGL-CG-0051 Sec. 1.5
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• EN ISO 5817 – Level C category)
+                ";
+              }
+            } else {
+              if($visual_preview[0]['class']==1){
+                echo "
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• DNVGL-OS-C401
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• DNVGL-CG-0051 Sec. 1.5
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• EN ISO 5817 – Level B category)
+                ";
+              } else {
+                echo "
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• DNVGL-OS-C401
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• DNVGL-CG-0051 Sec. 1.5
+                  </br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;• EN ISO 5817 – Level C category)
+                ";
+              }
+            }
+          ?>
+          </b></left></td>
+        </tr>
+      </head>
+    </table>   
+  </header>
+  <footer>
+    <?= $visual_preview[0]['discipline']==1 ? 'SOF-QCF-VIR-002' : 'SOF-QCF-VIR-001' ?>
+  </footer>
+  <br>
+  <table width="100%" border="0" style="text-align: left;border-collapse: collapse !important;">
+    <thead>
+    <tr>
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 20px"><center><b>S/N</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 170px"><center><b>Weld Map Drawing No. / Line & Spool No</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 40px"><center><b>Item No./<br/>Joint No</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 30px"><center><b>Class</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 30px"><center><b>Type<br/>Of<br/>Weld</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle;"><center><b>WPS</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 40px"><center><b>Cons/Lot No.</b></center></td>
+      <td colspan="2" class="ball" style="vertical-align: middle;"><center><b>Weld Process</b></center></td>
+      <td colspan="2" class="ball" style="vertical-align: middle;"><center><b>Welder ID</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 20px"><center><b>SIZE / <br>DIA</b></center></td>
+
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 20px"><center><b>SCH</b></center></td>
+
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 20px"><center><b>THK<br/>(MM)</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle; width: 40px"><center><b>Weld Length<br/>(MM)</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle;"><center><b>Weld Completion Date</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle;"><center><b>Inspection Result</b></center></td>
+      <td colspan="4" class="ball" style="vertical-align: middle; width: 100px"><center><b>NDE Requirement</b></center></td>
+      <td rowspan="2" class="ball" style="vertical-align: middle;"><center><b>Remarks</b></center></td>      
+    </tr>
+    <tr>
+      
+      <td class="ball" style="vertical-align: middle;"><center><b>R/H</b></center></td>
+      <td class="ball" style="vertical-align: middle;"><center><b>F/C</b></center></td>
+      <td class="ball" style="vertical-align: middle;"><center><b>R/H</b></center></td>
+      <td class="ball" style="vertical-align: middle;"><center><b>F/C</b></center></td>
+      <td class="ball" style="vertical-align: middle;"><center><b>MT</b></center></td>
+      <td class="ball" style="vertical-align: middle;"><center><b>PT</b></center></td>
+      <td class="ball" style="vertical-align: middle;"><center><b>UT</b></center></td>
+      <td class="ball" style="vertical-align: middle;"><center><b>RT</b></center></td>
+    </tr></thead>
+    <tbody>
+    <?php  
+      $no=1;
+      foreach ($visual_preview as $key => $value) {
+    ?>
+    <tr>
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= $no ?></td>
+      <!-- piping -->
+      <?php if($value['discipline']==1){ ?>
+        <td class="ball" style="vertical-align: middle; text-align: center"><?= $value['spool_no'] ?></td>
+      <?php } ?>
+      <!-- end piping -->
+
+      <!-- piping -->
+      <?php if($value['discipline']!=1){ ?>
+        <td class="ball" style="vertical-align: middle; text-align: center"><?= $value['drawing_wm'].' Rev. '.$value['rev_wm'] ?></td>
+      <?php } ?>
+      <!-- end piping -->
+
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= $value['joint_no'].($value['revision']>0 ? '('.$value['revision_category'].$value['revision'].')' : '') ?></td>
+      
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= $master_class[$value['class']]['class_code'] ?></td>
+
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= $master_weld_type[$value['weld_type']]['weld_type_code'] ?></td>
+
+      <?php  
+        $wps_rh = $post['wps_rh'][$key];
+        $wps_fc = $post['wps_fc'][$key];
+        $wps = array_unique(array_merge($wps_rh, $wps_fc));
+      ?>
+      <td class="ball" style="vertical-align: middle; text-align: center">
+        <?php  
+          print_r(implode(',<br>', $wps));unset($wps);
+        ?>
+      </td>
+
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= $post['cons_lot_no'][$key] ?></td>
+
+      <td class="ball" style="vertical-align: middle; text-align: center">
+        <?= implode(', ', $post['weld_process_rh'][$key]) ?>
+      </td>
+      
+      <td class="ball" style="vertical-align: middle; text-align: center">
+        <?= implode(', ', $post['weld_process_fc'][$key]) ?>
+      </td>
+
+      <?php  
+        $welder_rh = $post['welder_rh'][$key];
+        $welder_fc = $post['welder_fc'][$key];
+      ?>
+      <td class="ball" style="vertical-align: middle; text-align: center">
+        <?= implode(', ', $welder_rh) ?>   
+      </td>
+
+      <td class="ball" style="vertical-align: middle; text-align: center">
+        <?= implode(', ', $welder_fc) ?>
+      </td>
+
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= number_format($value['diameter'], 2) ?></td>
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= number_format($value['sch'], 2) ?></td>
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= number_format($value['thickness'], 2) ?></td>
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= number_format($post['weld_length'][$key], 2) ?></td>
+      <td class="ball" style="vertical-align: middle; text-align: center"><?= DATE('d F, Y', strtotime($post['weld_date'][$key].' '.$post['weld_time'][$key])) ?></td>
+      
+      <td class="ball" style="vertical-align: middle; text-align: center">
+        PREVIEW    
+      </td>
+
+      <td class="ball" style="vertical-align: middle;"><center>
+        <?php if($value['mt_percent_req']>0){ ?>
+        <img src="data:image/png;base64,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" style='width: 5px;'/>
+        <?php } else {
+          echo '-';
+        } ?>
+        </center>
+      </td> 
+
+      <td class="ball" style="vertical-align: middle;"><center>
+        <?php if($value['pt_percent_req']>0){ ?>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAC9CAYAAAD2tzLsAAANqklEQVR4Xu2dW8htVRXHf8fbsaNmXjLMRNOHwqyozJeILtiFkDSI6GJFQSQVRYIVEpFEVAd8qCgwgm5a9BBqImVqgg+BWFRYCaFHKT1IZud4y7vFOJzvtM/X3nvdxpxzzDX/6/H75hxzjN/4//dae+112YI2ERCBlQS2iI0IiMBKAtfLIFKHCPw/gXOAK+3PMojkIQL/I3A8sHMByBYZRPIQATgUeHQTiD3ekEEkj5YJHAw8sQSA7UnulUFalkbbtduO4ZkVCL4GfG7jf9qDtC2UFqv/z5qiba9he499mwzSokTarNm+fO8n/k0YngLskGu/TQZpUywtVf0j4LweBS/1ggzSg5yGVEngXcBPe2a+0gcySE+CGlYNgRcCOwZku9YDMsgAkhoamsBBwJMDM+zUf+eAgQtquAiUIPA34MSBC9sXcvtivnaTQboI6f+RCaz6oa8r57OBa7oG2f9lkD6UNCYigW8BHxuR2A3AWX3nySB9SWlcJALrfuxbl+du4KghhcggQ2hpbGkCRwAPjkzCTHXA0LkyyFBiGl+KwIXA9gmLj9L6qEkTktRUERhDYOwh1cZao3U+euKYKjVHBEYQKGYOncUa0S1NyUbgMODhiatN3gFMDjCxAE0XgWUE7DTsdRPRnALcOTGGfgeZClDz3QncApwxMepXgIsmxtgzXXsQD4qK4UVg6vcNy+M24DSvhGQQL5KKM5WAhzns/vKtUxNZnC+DeNJUrLEEPMyR5IhIBhnbUs3zIHAM8E+PQKm+LsggTt1RmMEE3gxcO3jW8gnJdJwssFPhCjNPApcAFziVllTDSYM7AVCYeRG4A7DfKDy2bUueiOgRd18MGcQVp4J1ELCHtXlp7p3Az1IT90o2dZ6KXz8BrzNVRuJq4O05kMggOShrDU9z3AcclwupDJKLdLvreJrDKGbVbNbF2tVIs5VXbY7sbmxWJu0VbmeXHnEuu8iHeZFFncEpXCwCJ3tcZr6ppGI6LbZwrJ4qGycCrwVucoq1EcYetOB9qNY7RRmkNyoN7CDwAeAHzpReBPzVOeagcDLIIFwavIKAvZXpM850Lga+6BxzcDgZZDAyTdhE4KoEP9r9HnhlBNIySIQu1JvDnz3v3tuLwZ7QfkgUJDJIlE7Ul8c9wPMTpB1Kk6GSSQBbIdMQeAg4PEHocHoMl1AC6ArpS8DeqXGgb8g90UJqMWRSCeArpA+BVL9HhNVh2MR8+qkojgRSmePICU9sdyxveSgZJDniWSyQyhzvAK6MTEgGidydGLmlMsdlwPtjlLg6CxkkeofK5pfKHPcDx5Ytrd/qMkg/Ti2OSmWOsGesljVZBmlR+t01yxx7Gckg3WJpbYTMsdBxGaQ1+a+vV+bYxEcGkUE2CKQ0x9HArhpRyyA1ds0/55Tm+BDwff+U80SUQfJwjrxKSnP8BXhJ5OK7cpNBugjN+/8pzVHV6dxVbZZB5m2AddXJHD16L4P0gDTDITJHz6bKID1BzWiYzDGgmTLIAFgzGJraHMUf0+PdIxnEm2jceKnN8T3gw3HLH5eZDDKOW22zUpvjaeCg2qD0yVcG6UOp7jEmXnt8Z8pttjqabWEp1VBR7MeArYnznbWGZl1cYmFED/8A8OzESc5eP7MvMLFAooa/F3he4uRmd8ZqGS8ZJLGKCoS/HTg18bq/AN6WeI0Q4WWQEG1wS+Jm4Ey3aKsDNaObZgrNIJrSS1wOvDdDEk1ppqliM4in1BIXAV/OsHhzemmu4Awiyr3EWcB1GRY9DPh3hnVCLSGDhGrH4GROAu4aPGv4hPOBS4dPq3+GDFJvD+3SDnvZTOrtmURPc0+dt0t8GcQFY5Egqa+v2iiqaY00XXwRWfssKnP4cOyMIoN0Igo3IJc57BDOLnRsepNB6mp/LnO8BfhVXWjSZCuDpOGaImouczwKbEtRQI0xZZA6upbLHEZDmljQhGDEN0iOG550xmqFDmSQ2AaxX66flSnFgwF7g6027UGq0MBO4PhMmVb9/NyUjLQHSUl3fOwrgHPHTx88UzrQIdZg0ZSa8G7gJxkXlznWwBacjErssdRzgX/0GOc1RP3vIClAXlLziZPzdO6hwOM+ac83igwSp7c5zXE98KY4pcfNRAaJ0Zuc5rCK1feefReonqASDpM5EsKdGloGmUpw2nyZYxq/5LNlkOSIVy6Q2xyvAX5Trtw6V5ZByvQttzn0vWNkn2WQkeAmTJM5JsDLPVUGyUv8PuDYvEvqjNUU3qkNYu+lsDXGrDO3K0vt8hG7jCTnZlcC2ysQtI0kMEa4m5eye5c/DWwfmcOqaX8CXuocs1S41wM3Zl78HuAFmdec3XJjDfIe4McZaIzNL0NqvZc4Etjde7TfwDmw86MxMtIQiIcDD41cZ+y0IfmNXSPlvFwPd9tcQ+3cUvZkUOw+IO2mHbt5p8RW85tTja09lTD31qenuXOqdr0umCVOSc7l07AEu5uA11WrxoCJrzNIiQYvQ9Rl4oBYKcWuRlYR+7cvp2VASx0arAL1EeC7oSnun5zMUVGzulJdZpBSDV6Xay2fjKXY1cKnS4/h/r8INtqeYxFWDQIoZY6rMj/gIZyIUya0IbzI5rD67QdD++Ew6mZnq0qZuNS6UXvhmtfGZSAlTkcOLSSqEOwNT/ampxJbVCYlWCRZ0wCXOjQYWlBEMXwT+MTQQpzGR+ThVFqcMAbZHjn5RJyUVmYS7SWS9oqAXxbipt87MoHf+BTSXmQYcLsI8O/DpriO1t7DFefqYIugazBJBGHYJeQlX4ccgUEmeZZfpjaD2P0lJY1c+mzf1koOh8sr2ymDzZ9GJcXXt6SSn6Al+ewATu0LSeN8CGwW24PAET6hk0UpZZCS5jCYpepO1sgaAtdyqckiyxJCkTlqUHOCHJeJ7dfAGxKs5RXS7rHO9dYly7m0OV4G3OoFT3GGEVj1aVxaFF1V5NqLlObwcAWHvF29qvr/q4T2PuCywJXlMIi9GuCQwgxy1Fm4xNjLr2tA6U/PdeRSP/Hkj4Ad2pTcZI6S9Peuva4JzwF2BchxVQqpBHQJcEHhur8NfLxwDlq+x6nDyHuRFAY5G7g6gDJS1BagrPpS6NOIqCb5IfBBR+SnAHc4xhsbqk9PxsbWvIEE+jQjqkGs1D7590FS+vqqjRyPAf7VJ2GNyUOgr8CimqRv/l00I9RnD7Y+ritR/T8vgb4CewTYlje1Xqt9FPhOr5GrB0Uwh+fecCIOTV8k0NcgNieKkDZ3cEgNm+dGqWlKDVJ0QgJDGnMzcGbCXMaGHlLD4hpRzHE5cN7Y4jUvLYGh4ooiqkUqrwD+MBBTpDqG9mBgqRo+hcDQ5nwS+PqUBRPNHVKHzJGoCXMMO0RYG/VHEthGTn3rsNc32GscImz2o+Q1ERJRDqsJ9BXWYoTSDyxYVo1dFvNAR6OjfYcaw15azkxgbJNq24t8FfhsZrbrlhvLPVAJbaQypVHRTLKqlnOBKwK180Tg7kD5KJU1BOZukJOBOwMpIPfdkIFKrzOVKQaxiiPvRexmJ7vpKdI2lXekWprIZWrD7JGl9ujSKNtiPdHMa2fP7JIdbRURmGqQaHuRjXqimcOMEeX0ckXyLJ+qh0HsiRunly9lTwb2SNCIF1V6cA6CuK00vBoX7RM7UhejPZU+EpvwuXgZ5AvAxeGrzZ+g7dHMINoqJeBlkGjfRaK0w5NvlJqaysOzgS8GbmuK3vpiTwB2ikfdBDwNor3I/lrwZlu30irN3ruJBwJPVcrCM21vrp65KdYAAika2foZrbcC1w7ogYYGJpDCIK0faqViGlhG800tVTPtveupYkfuRos1R+7H5NxSNrS1Q61vAJ+a3BEFCEUgpUFub+ydeilZhhJNS8mkbmore5HUHFvSZKhaUzf288CXQlXsn8wtQZ8X5l9pgxFTG6SFM1o5GDYozRgl52juScBdMcp1z+KAgHdVuhfZcsAcBpnrXkRPY2/AObkMMkeT5GTXgBRjlpizyXM6o2UPhHgyZkuVlSeBnAaZy15kN3CUZxMUKy6B3Ab5LfCquDh6ZZabWa+kNCgNgRLNrvlQaytgjzrS1giBEgZ5+Yj3eURoh85aRehC5hxKGKTW7yKlWGWWhJZbJFCy6TUdatmdknYJv7bGCJQ0SC33jNiDKE5rTBcqdy+Bkgap5VCrNCOJtSCB0s2/ENhesP6upUvz6cpP/09MIIIAon4XuRQ4PzF/hQ9OIIJB7IrYpwNyisAmIJa2Uooigmh7kShc2lJjwGojCSGKSV4N2CUx2kQg1KN53gjcEKAnkT40AuBoO4VoYii9F4nGo211Bqg+oiBKmcTetajnCgcQZaQUIhqkxCXxNwJ2iKdNBPYjENEglmDuvUhUDpJrYQJRhZHzNQpRGRSWhpY3ApHF8RhgNyil3I4GdqVcQLHrJhDZIKkPtXRved3azZJ9dIPY00MeT0Qieu2JylbYIQRqEImderXvJJ5bDXV71qtYIwnUIhTPs1r23nJ7f7k2EegkUItBvK74/R1wRicVDRCBvQRqMYileytw+sTO1VTvxFI13YNAbYKZcqhVW60e/VWMiQRqFM0Yk9RY58TWaroHgRqFYz/u3T+geF2EOACWhu5PoEaDWAV3Ayf0aOY5wM97jNMQEVhKoFaDWDFdh1o7GnvLriSegMB/AXONS4jFDQAjAAAAAElFTkSuQmCC" style='width: 5px;'/>
+        <?php } else {
+          echo '-';
+        } ?>
+        </center>
+      </td> 
+
+      <td class="ball" style="vertical-align: middle;"><center>
+        <?php if($value['ut_percent_req']>0){ ?>
+        <img src="data:image/png;base64,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" style='width: 5px;'/>
+        <?php } else {
+          echo '-';
+        } ?>
+        </center>
+      </td> 
+
+      <td class="ball" style="vertical-align: middle;"><center>
+        <?php if($value['rt_percent_req']>0){ ?>
+        <img src="data:image/png;base64,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" style='width: 5px;'/>
+        <?php } else {
+          echo '-';
+        } ?>
+        </center>
+      </td> 
+
+      <td class="ball" style="vertical-align: middle;"><center><?= $post['inspection_remarks'][$key] ?></center></td>    
+
+    </tr>
+    <?php $no++;} ?>
+    
+  </tbody>
+</table>
+
+  <br><br><br><br><br>
+  <!-- <table width="100%">
+    <tr>
+      <td colspan="20"> -->
+      <div style="page-break-inside: avoid !important;">
+        <table class="table-body" width="100%" style="border-collapse: collapse !important; padding-top: -0.8px;">
+          <tbody>
+            <tr>
+              <td style="width: 25%; border: none;text-align: left;">
+              
+              </td>
+              <td style="width: 25%; border: none;"></td>
+              
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;">
+              </td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+            </tr>
+            <tr>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+            </tr>
+            <tr>
+              <td style="width: 25%; border: none;text-align: left;">
+                <br>
+                <b>__________________________</b>
+              </td>
+              <td style="width: 25%; border: none;"></td>
+              
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;">
+                <br>
+                <b>__________________________</b>
+              </td>
+
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;">
+                <b>__________________________</b>
+              </td>
+              
+            </tr>
+            <tr>
+              <td style="width: 25%; border: none; padding-top: 10px;text-align: left;">
+                <b>CONTRACTOR</b>
+              </td>
+              <td style="width: 25%; border: none; padding-top: 10px;">
+                <b></b>
+              </td>
+              <td style="width: 25%; border: none; padding-top: 10px;">
+                <b></b>
+              </td>
+              <td style="width: 25%; border: none; padding-top: 10px;">
+                <b>EMPLOYER</b>
+              </td>
+              <td style="width: 25%; border: none; padding-top: 10px;">
+                <b></b>
+              </td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none; padding-top: 10px;">
+                <b>THIRD PARTY</b>
+              </td>
+              
+            </tr>
+            <tr>
+              <td style="width: 25%; border: none;">
+              </td>
+              <td style="width: 25%; border: none;">
+              </td>
+              
+              <td style="width: 25%; border: none;">
+              </td>
+              <td style="width: 25%; border: none;">
+              </td>
+              <td style="width: 25%; border: none;"></td>
+              <td style="width: 25%; border: none;">
+              </td>
+              <td style="width: 25%; border: none;">
+                DATE : 
+              </td>
+              
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- </td>
+    </tr>
+  </table> -->
+</body>
+</html>

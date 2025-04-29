@@ -1,0 +1,17 @@
+
+upload/visual/
+
+file/evidence_approval_log/
+
+application/cache/
+
+application/logs/
+
+upload/aaaa/
+
+application/controllers/Test.php
+upload/
+file/download_mdb/*
+
+file/download_mdb/
+file/engineering/excel_1001728.xlsx
